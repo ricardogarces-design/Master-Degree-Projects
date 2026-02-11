@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Kompy – Lectura del ticket</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Fuente e iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          crossorigin="anonymous" />
+
+    <style>
+        :root {
+            --kompy-green: #4CAF50;
+            --kompy-green-dark: #2e7d32;
+            --text-light: #f5f5f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Poppins";
+            background-color: #f4f7f5;
+            color: #222;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            background: rgba(5, 6, 8, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .navbar-logo img {
+            height: 64px;
+            border-radius: 10px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .navbar-item {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-bottom: 3px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .navbar-item i {
+            font-size: 0.95rem;
+        }
+
+        .navbar-item:hover {
+            color: var(--kompy-green);
+            border-color: var(--kompy-green);
+        }
+
+        .navbar-cta {
+            background: var(--kompy-green);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .navbar-cta:hover {
+            background: var(--kompy-green-dark);
+            box-shadow: 0 8px 18px rgba(76, 175, 80, 0.35);
+            transform: translateY(-1px);
+        }
+
+        main {
+            padding: 140px 8vw 40px;
+        }
+
+        .card {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 18px;
+            padding: 24px 24px 26px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+            border: 1px solid #dceadd;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--kompy-green-dark);
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #555;
+            margin-bottom: 16px;
+        }
+
+        .ocr-text {
+            margin-top: 10px;
+            background: #f8faf8;
+            border-radius: 10px;
+            padding: 12px 14px;
+            border: 1px dashed #c7d8c7;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-size: 0.9rem;
+        }
+
+        .actions-row {
+            margin-top: 18px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary, .btn-primary-small {
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: #f5faf5;
+            border: 1px solid #b5cdb7;
+            color: #234126;
+        }
+
+        .btn-secondary:hover {
+            background: #e2f1e4;
+        }
+
+        .btn-primary-small {
+            background: var(--kompy-green);
+            color: #fff;
+            border: none;
+            font-weight: 600;
+        }
+
+        .btn-primary-small:hover {
+            background: var(--kompy-green-dark);
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="navbar-logo">
+        <img src="kompy_logo_white.png" alt="Kompy">
+        <span>Kompy</span>
+    </div>
+
+    <nav class="navbar-menu">
+        <a href="KOMPY.html#planificador" class="navbar-item">
+            <i class="fa-solid fa-clipboard-list"></i> Planificador
+        </a>
+        <a href="kompy_ticket.html" class="navbar-item">
+            <i class="fa-solid fa-receipt"></i> Subir ticket
+        </a>
+        <a href="kompy_resultados_historicos.html" class="navbar-item">
+            <i class="fa-solid fa-clock-rotate-left"></i> Historial
+        </a>
+        <a href="KOMPY.html#sobre-nosotros" class="navbar-item">
+            <i class="fa-solid fa-circle-info"></i> Sobre nosotros
+        </a>
+        <a href="KOMPY.html#how" class="navbar-item">
+            <i class="fa-solid fa-route"></i> Cómo funciona
+        </a>
+        <a href="kompy_usuario.html" class="navbar-cta">
+            <i class="fa-solid fa-user"></i> Acceder
+        </a>
+    </nav>
+</header>
+
+<main>
+    <div class="card">
+        <h1>Resultado de lectura del ticket</h1>
+        <p style="margin-top:10px; color:#555;">
+            <strong>Ticket:</strong> <span id="ticket-name">—</span>
+        </p>
+
+        <p class="subtitle">
+            Este es el texto detectado por el OCR a partir de la imagen que has subido.
+        </p>
+
+        <div id="texto-ocr" class="ocr-text">
+            Cargando resultado del ticket...
+        </div>
+
+        <div class="actions-row">
+            <a href="kompy_ticket.html">
+                <button class="btn-secondary">
+                    <i class="fa-solid fa-receipt"></i> Subir otro ticket
+                </button>
+            </a>
+                <button id="confirm-ticket" class="btn-primary-small" type="button">
+                    <i class="fa-solid fa-circle-check"></i> Confirmar Ticket subido y Ver Recompensas
+                </button>
+            <a href="kompy_hist_recomendaciones.html" class="btn-primary-small">
+                <i class="fa-solid fa-lightbulb"></i>
+                Recomendaciones Generadas por IA.
+            </a>
+        </div>
+    </div>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const params = new URLSearchParams(window.location.search);
+
+  // --- 1) Pintar nombre del ticket ---
+  const ticketNameEl = document.getElementById("ticket-name");
+  const nameFromQuery = (params.get("nota") || "").trim();   // viene del GET
+  const nameFromLS = (localStorage.getItem("kompy_ticket_name") || "").trim();
+
+  const ticketName = nameFromQuery || nameFromLS || "Sin nombre";
+  if (ticketNameEl) ticketNameEl.textContent = ticketName;
+
+  // Guardamos para otras páginas
+  localStorage.setItem("kompy_ticket_name", ticketName);
+
+  // --- 2) Pintar OCR ---
+  const contenedor = document.getElementById("texto-ocr");
+  const text = localStorage.getItem("kompy_ocr_text");
+
+  if (contenedor) {
+    if (text && text.trim().length > 0) {
+      contenedor.textContent = text.trim();
+    } else {
+      contenedor.textContent =
+        "No se ha encontrado ningún texto OCR. Vuelve a la página de 'Subir ticket' y prueba de nuevo.";
+    }
+  }
+
+  // --- Helpers localStorage (historial / progreso / recompensas) ---
+  function readJSON(key, fallback) {
+    try {
+      const v = JSON.parse(localStorage.getItem(key));
+      return (v === null || v === undefined) ? fallback : v;
+    } catch {
+      return fallback;
+    }
+  }
+  function writeJSON(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+  function pad2(n){ return String(n).padStart(2,"0"); }
+  function formatDateTime(d){
+    // dd/mm/yyyy hh:mm
+    return `${pad2(d.getDate())}/${pad2(d.getMonth()+1)}/${d.getFullYear()} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  }
+
+  // --- 3) Confirmar ticket: historial + barra + recompensa ---
+  const btnConfirm = document.getElementById("confirm-ticket");
+  if (!btnConfirm) return;
+
+  btnConfirm.addEventListener("click", () => {
+    // Evitar doble click
+    btnConfirm.disabled = true;
+
+    const now = new Date();
+    const when = formatDateTime(now);
+
+    // A) Historial
+    const history = readJSON("kompy_ticket_history", []);
+    history.unshift({
+      name: ticketName,
+      datetime: when
+    });
+    writeJSON("kompy_ticket_history", history);
+
+    // B) Contador del ciclo (0..4) para “cada 5”
+    let cycleCount = Number(localStorage.getItem("kompy_ticket_cycle_count") || "0");
+    if (Number.isNaN(cycleCount) || cycleCount < 0) cycleCount = 0;
+
+    cycleCount += 1;
+
+    // C) Si llega a 5 -> reset a 0 y añadir recompensa 5%
+    if (cycleCount >= 5) {
+      cycleCount = 0;
+
+      const rewardsAvail = readJSON("kompy_rewards_available", []);
+      rewardsAvail.unshift({
+        type: "5pct",
+        title: "Devolución del 5% en tu próxima compra",
+        createdAt: when,
+        detail: "Generada por completar 5 tickets subidos."
+      });
+      writeJSON("kompy_rewards_available", rewardsAvail);
+    }
+
+    localStorage.setItem("kompy_ticket_cycle_count", String(cycleCount));
+
+    // D) Flag para mostrar banner en otra página (ej. kompy_resultados.html)
+    localStorage.setItem("kompy_flash_ticket_confirmed", `Ticket Subido a tu historial Correctamente: "${ticketName}" (${when})`);
+
+    // Redirige a recompensas (o cambia a donde tú quieras)
+    window.location.href = "kompy_recompensas_ticket.html";
+  });
+});
+</script>
+</body>
+</html>

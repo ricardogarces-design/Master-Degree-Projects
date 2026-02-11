@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Kompy – Resultados de tu ruta</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Misma fuente e iconos que KOMPY.html -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        :root {
+            --kompy-green: #4CAF50;
+            --kompy-green-dark: #2e7d32;
+            --bg-dark: #050608;
+            --text-light: #f5f5f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #222;
+            background-color: #f4f7f5;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* NAVBAR (igual que en KOMPY.html) */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            background: rgba(5, 6, 8, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .navbar-logo img {
+            height: 64px;
+            border-radius: 10px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .navbar-item {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-bottom: 3px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .navbar-item i {
+            font-size: 0.95rem;
+        }
+
+        .navbar-item:hover {
+            color: var(--kompy-green);
+            border-color: var(--kompy-green);
+        }
+
+        .navbar-cta {
+            background: var(--kompy-green);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .navbar-cta:hover {
+            background: var(--kompy-green-dark);
+            box-shadow: 0 8px 18px rgba(76, 175, 80, 0.35);
+            transform: translateY(-1px);
+        }
+
+        /* CONTENIDO PRINCIPAL DE RESULTADOS */
+        main {
+            padding: 130px 8vw 40px; /* margen superior para no tapar la navbar */
+        }
+
+        .section-header {
+            text-align: left;
+            margin-bottom: 24px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-kicker {
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.78rem;
+            color: var(--kompy-green);
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 1.9rem;
+            margin-top: 8px;
+            margin-bottom: 6px;
+        }
+
+        .section-subtitle {
+            font-size: 0.96rem;
+            color: #666;
+        }
+
+        /* AHORA SOLO UNA COLUMNA CENTRADA */
+        .results-layout {
+            max-width: 900px;
+            margin: 24px auto 0 auto;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 20px 22px 22px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(220, 234, 223, 0.9);
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: var(--kompy-green-dark);
+        }
+
+        .results-meta {
+            font-size: 0.92rem;
+            color: #444;
+            margin-top: 6px;
+            margin-bottom: 8px;
+        }
+
+        .results-meta strong {
+            color: #222;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .results-table th,
+        .results-table td {
+            border: 1px solid #dfe6df;
+            padding: 8px 10px;
+            text-align: center;
+        }
+
+        .results-table thead {
+            background: #e8f5e9;
+        }
+
+        .results-table th {
+            font-weight: 600;
+            color: #2e4b32;
+        }
+
+        .results-tag {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #777;
+        }
+
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            border: 1px solid #cfd9cf;
+            background: #f8fbf8;
+            font-size: 0.8rem;
+        }
+
+        .btn-link:hover {
+            background: #e8f5e9;
+        }
+
+        .actions-row {
+	    justify-content: center;
+            margin-top: 16px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            padding: 9px 16px;
+            border-radius: 999px;
+            border: 1px solid #b0c7b1;
+            background: #f5faf5;
+            font-size: 0.86rem;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: #e1f0e2;
+        }
+
+        .btn-primary-small {
+            background: var(--kompy-green);
+            color: #fff;
+            padding: 9px 18px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary-small:hover {
+            background: var(--kompy-green-dark);
+        }
+
+        footer {
+            padding: 18px 8vw 24px;
+            background: #050608;
+            color: rgba(250, 250, 250, 0.75);
+            font-size: 0.8rem;
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        @media (max-width: 720px) {
+            .navbar-menu {
+                display: none;
+            }
+
+            main {
+                padding: 120px 5vw 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR COMPATIBLE CON KOMPY.HTML -->
+<header class="navbar">
+    <div class="navbar-logo">
+        <img src="kompy_logo_white.png" alt="Kompy">
+        <span>Kompy</span>
+    </div>
+
+    <nav class="navbar-menu">
+        <a href="KOMPY.html#planificador" class="navbar-item">
+            <i class="fa-solid fa-clipboard-list"></i> Planificador
+        </a>
+        <a href="kompy_ticket.html" class="navbar-item">
+            <i class="fa-solid fa-receipt"></i> Subir ticket
+        </a>
+        <a href="kompy_resultados_historicos.html" class="navbar-item">
+            <i class="fa-solid fa-clock-rotate-left"></i> Historial
+        </a>
+        <!-- AHORA APUNTA AL BLOQUE DENTRO DE CONTACTO -->
+        <a href="#sobre-nosotros" class="navbar-item">
+            <i class="fa-solid fa-circle-info"></i> Sobre nosotros
+        </a>
+        <a href="#how" class="navbar-item">
+            <i class="fa-solid fa-route"></i> Cómo funciona
+        </a>
+        <a href="kompy_usuario.html" class="navbar-cta">
+            <i class="fa-solid fa-user"></i> Acceder
+        </a>
+    </nav>
+</header>
+
+<main>
+    <!-- CABECERA DE RESULTADOS -->
+    <div class="section-header">
+        <div class="section-kicker">Resultados</div>
+        <h1 class="section-title">Rutas generadas para tu compra</h1>
+        <p class="section-subtitle">
+          Kompy presenta las tres opciones optimizadas en función de tu lista y tus preferencias.
+        </p>
+    </div>
+
+    <!-- SOLO UNA COLUMNA CENTRADA -->
+    <div class="results-layout">
+        <section class="card">
+            <h3>Resumen general</h3>
+            <p class="results-meta">
+                <strong>Trayecto:</strong>
+    		<span id="res-origen">—</span> → <span id="res-destino">—</span><br>
+
+    		<strong>Fecha/Hora:</strong>
+    		<span id="res-fecha">—</span> · <span id="res-hora">—</span><br>
+
+   		<strong>Perfil sugerido:</strong> Equilibrado.
+            </p>
+
+            <h3 style="margin-top:16px;">Comparativa de rutas</h3>
+            <table class="results-table">
+                <thead>
+                <tr>
+                    <th>Ruta</th>
+                    <th>Objetivo</th>
+                    <th>Coste estimado</th>
+                    <th>Tiempo estimado</th>
+                    <th>Paradas</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><span class="results-tag">Ahorro</span></td>
+                    <td>Minimizar coste</td>
+                    <td>11,20 €</td>
+                    <td>17 min</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td><span class="results-tag">Rápida</span></td>
+                    <td>Minimizar tiempo</td>
+                    <td>13,40 €</td>
+                    <td>12 min</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td><span class="results-tag">Equilibrada</span></td>
+                    <td>Balance coste/tiempo</td>
+                    <td>12,45 €</td>
+                    <td>13 min</td>
+                    <td>2</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="actions-row">
+                <a id="link-ahorro" href="#" class="btn-link"><i class="fa-solid fa-piggy-bank"></i> Ver ruta ahorradora</a>
+
+                <a id="link-rapida" href="#"class="btn-link">
+                    <i class="fa-solid fa-bolt"></i> Ver ruta rápida
+                </a>
+                <a id="link-equilibrada" href="#" class="btn-link">
+                    <i class="fa-solid fa-scale-balanced"></i> Ver ruta equilibrada
+                </a>
+            </div>
+
+            
+        </section>
+    </div>
+</main>
+
+<footer>
+    <span>© 2025 Kompy · Save more, live smarter.</span>
+    <span>Demo de resultados de ruta.</span>
+</footer>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const params = new URLSearchParams(window.location.search);
+
+    const origen = params.get("origen") || "Origen no especificado";
+    const destino = params.get("destino") || "Destino no especificado";
+    const fecha = params.get("fecha") || "Sin fecha";
+    const hora = params.get("hora") || "Sin hora";
+    const lista = params.get("lista_compra") || "";
+
+    // Pintar en el HTML
+    const elOrigen = document.getElementById("res-origen");
+    const elDestino = document.getElementById("res-destino");
+    const elFecha = document.getElementById("res-fecha");
+    const elHora = document.getElementById("res-hora");
+    const elLista = document.getElementById("res-lista");
+
+    if (elOrigen) elOrigen.textContent = origen;
+    if (elDestino) elDestino.textContent = destino;
+    if (elFecha) elFecha.textContent = fecha;
+    if (elHora) elHora.textContent = hora;
+
+    if (elLista) {
+        // Decodificar saltos de línea
+        elLista.textContent = lista;
+    }
+});
+document.addEventListener("DOMContentLoaded", function () {
+    const params = new URLSearchParams(window.location.search);
+    // ... lo de antes ...
+
+    // Construir la query tal cual viene de KOMPY.html
+    const queryString = window.location.search; // incluye ?origen=...&destino=...
+
+    const linkAhorro = document.getElementById("link-ahorro");
+    const linkRapida = document.getElementById("link-rapida");
+    const linkEquilibrada = document.getElementById("link-equilibrada");
+
+    if (linkAhorro) linkAhorro.href = "kompy_ruta_ahorradora.html" + queryString;
+    if (linkRapida) linkRapida.href = "kompy_ruta_rapida.html" + queryString;
+    if (linkEquilibrada) linkEquilibrada.href = "kompy_ruta_equilibrada.html" + queryString;
+});
+</script>
+</body>
+</html>
+

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Kompy – Subir ticket</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Fuente e iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          crossorigin="anonymous" />
+
+    <style>
+        :root {
+            --kompy-green: #4CAF50;
+            --kompy-green-dark: #2e7d32;
+            --bg-dark: #050608;
+            --text-light: #f5f5f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f4f7f5;
+            color: #222;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            background: rgba(5, 6, 8, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .navbar-logo img {
+            height: 64px;
+            border-radius: 10px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .navbar-item {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-bottom: 3px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .navbar-item i {
+            font-size: 0.95rem;
+        }
+
+        .navbar-item:hover {
+            color: var(--kompy-green);
+            border-color: var(--kompy-green);
+        }
+
+        .navbar-cta {
+            background: var(--kompy-green);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .navbar-cta:hover {
+            background: var(--kompy-green-dark);
+            box-shadow: 0 8px 18px rgba(76, 175, 80, 0.35);
+            transform: translateY(-1px);
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        main {
+            padding: 140px 8vw 40px;
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto 24px;
+        }
+
+        .section-title {
+            font-size: 1.9rem;
+        }
+
+        .section-subtitle {
+            color: #555;
+            font-size: 0.96rem;
+        }
+
+        .page-layout {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 24px 24px 26px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+            border: 1px solid #dceadd;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--kompy-green-dark);
+        }
+
+        .form-row {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.86rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        input[type="file"],
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 9px 11px;
+            border-radius: 10px;
+            border: 1px solid #cfd9cf;
+            font-size: 0.9rem;
+            font-family: inherit;
+            background: #fdfefe;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .hint {
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 4px;
+        }
+
+        .actions-row {
+            margin-top: 18px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary, .btn-primary-small {
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: #f5faf5;
+            border: 1px solid #b5cdb7;
+            color: #234126;
+        }
+
+        .btn-secondary:hover {
+            background: #e2f1e4;
+        }
+
+        .btn-primary-small {
+            background: var(--kompy-green);
+            color: #fff;
+            border: none;
+            font-weight: 600;
+        }
+
+        .btn-primary-small:hover {
+            background: var(--kompy-green-dark);
+        }
+
+        .ocr-status {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .ocr-preview {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            background: #f8faf8;
+            border-radius: 10px;
+            padding: 10px 12px;
+            border: 1px dashed #c7d8c7;
+            max-height: 160px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="navbar-logo">
+        <img src="kompy_logo_white.png" alt="Kompy">
+        <span>Kompy</span>
+    </div>
+
+    <nav class="navbar-menu">
+        <a href="KOMPY.html#planificador" class="navbar-item">
+            <i class="fa-solid fa-clipboard-list"></i> Planificador
+        </a>
+        <a href="kompy_ticket.html" class="navbar-item">
+            <i class="fa-solid fa-receipt"></i> Subir ticket
+        </a>
+        <a href="kompy_resultados_historicos.html" class="navbar-item">
+            <i class="fa-solid fa-clock-rotate-left"></i> Historial
+        </a>
+        <a href="KOMPY.html#sobre-nosotros" class="navbar-item">
+            <i class="fa-solid fa-circle-info"></i> Sobre nosotros
+        </a>
+        <a href="KOMPY.html#how" class="navbar-item">
+            <i class="fa-solid fa-route"></i> Cómo funciona
+        </a>
+        <a href="kompy_usuario.html" class="navbar-cta">
+            <i class="fa-solid fa-user"></i> Acceder
+        </a>
+    </nav>
+</header>
+
+<main>
+    <div class="section-header">
+        <h1 class="section-title">Subir ticket</h1>
+        <p class="section-subtitle">
+            Sube una foto de tu ticket para que Kompy pueda analizar tu gasto y aprender de tus hábitos de compra.
+        </p>
+    </div>
+
+    <div class="page-layout">
+        <div class="card">
+            <h3>Ticket de compra</h3>
+
+            <!-- Ahora el OCR se hace en el navegador, no enviamos el formulario -->
+            <form id="ocr-form">
+                <div class="form-row">
+                    <label for="ticket">Imagen del ticket</label>
+
+                    <!-- Fila: seleccionar archivo + hacer foto -->
+                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <!-- Input normal (galería / archivos) -->
+                    <input type="file" id="ticket" name="ticket" accept="image/*" required style="flex:1; min-width:220px;">
+
+                    <!-- Botón "Hacer una foto" -->
+                    <button type="button" class="btn-secondary" id="btn-foto">
+                    <i class="fa-solid fa-camera"></i>
+                    Hacer una foto
+                    </button>
+                </div>
+
+                <!-- Input oculto: abre cámara (móvil/tablet compatible) -->
+                <input type="file"
+                    id="ticket-camera"
+                     accept="image/*"
+                    capture="environment"
+                    style="display:none;">
+
+                <p class="hint">
+                Formatos aceptados: JPG, PNG. Intenta que la foto esté bien iluminada y recta.
+                </p>
+
+
+                <div class="form-row">
+                    <label for="nota">Nombre de Ticket</label>
+                    <textarea id="nota" name="nota" placeholder="Ticket compra semanal, supermercado habitual, etc."></textarea>
+                </div>
+
+                <div class="actions-row">
+                    <button type="reset" class="btn-secondary" id="btn-limpiar">
+                        <i class="fa-solid fa-eraser"></i>
+                        Limpiar campos
+                    </button>
+                    <button type="button" class="btn-primary-small" id="btn-ocr">
+                        <i class="fa-solid fa-eye"></i>
+                        Comprobar lectura
+                    </button>
+                    <a href="kompy_ticket_resultado.html">
+                        <button type="button" class="btn-secondary" id="btn-ir-resultado" disabled>
+                            <i class="fa-solid fa-list"></i>
+                            Obtener detalles y recompensa
+                        </button>
+                    </a>
+                </div>
+
+                <div id="ocr-status" class="ocr-status"></div>
+                <div id="ocr-preview" class="ocr-preview" style="display:none;"></div>
+            </form>
+
+            <div class="actions-row" style="margin-top:24px;">
+                <a href="kompy_recompensas_ticket.html">
+                    <button class="btn-primary-small">
+                        <i class="fa-solid fa-trophy"></i>
+                        Ver recompensas anteriores
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Tesseract.js desde CDN -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const inputFile      = document.getElementById("ticket");
+    const btnOcr         = document.getElementById("btn-ocr");
+    const btnIrResultado = document.getElementById("btn-ir-resultado");
+    const statusDiv      = document.getElementById("ocr-status");
+    const previewDiv     = document.getElementById("ocr-preview");
+    const btnLimpiar     = document.getElementById("btn-limpiar");
+
+    // Limpiar estado al resetear
+    btnLimpiar.addEventListener("click", function () {
+        statusDiv.textContent  = "";
+        previewDiv.textContent = "";
+        previewDiv.style.display = "none";
+        btnIrResultado.disabled = true;
+        localStorage.removeItem("kompy_ocr_text");
+    });
+
+    btnOcr.addEventListener("click", async function () {
+        if (!inputFile.files || inputFile.files.length === 0) {
+            alert("Por favor, selecciona una imagen de ticket primero.");
+            return;
+        }
+
+        const file = inputFile.files[0];
+
+        statusDiv.textContent = "Procesando ticket con OCR... Puede tardar unos segundos.";
+        previewDiv.style.display = "none";
+        previewDiv.textContent = "";
+        btnIrResultado.disabled = true;
+
+        try {
+            const { Tesseract } = window;
+            const worker = await Tesseract.createWorker("spa+eng", 1, {
+                logger: m => {
+                    if (m.status === "recognizing text") {
+                        const pct = (m.progress * 100).toFixed(0);
+                        statusDiv.textContent = "Leyendo ticket... " + pct + "%";
+                    }
+                }
+            });
+
+            const result = await worker.recognize(file);
+            await worker.terminate();
+
+            const text = result.data.text || "";
+            statusDiv.textContent = "Lectura completada. Puedes revisar el texto o ver el detalle.";
+            previewDiv.textContent = text.trim() || "(No se ha podido leer texto del ticket)";
+            previewDiv.style.display = "block";
+
+            // Guardamos el texto en localStorage para usarlo en kompy_ticket_resultado.html
+            localStorage.setItem("kompy_ocr_text", text);
+
+            // Habilitar el botón para ir a la página de resultados
+            btnIrResultado.disabled = false;
+
+        } catch (err) {
+            console.error(err);
+            statusDiv.textContent = "Ha ocurrido un error al procesar el ticket.";
+            previewDiv.style.display = "none";
+            btnIrResultado.disabled = true;
+        }
+    });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const nota = document.getElementById("nota");
+  if (nota) {
+    // Guarda en tiempo real (por si el submit no pasa la query)
+    nota.addEventListener("input", () => {
+      localStorage.setItem("kompy_ticket_name", (nota.value || "").trim());
+    });
+  }
+
+  const form = document.querySelector("form");
+  if (form) {
+    form.addEventListener("submit", () => {
+      if (nota) localStorage.setItem("kompy_ticket_name", (nota.value || "").trim());
+
+      const fileInput = document.getElementById("ticket");
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        localStorage.setItem("kompy_ticket_archivo", fileInput.files[0].name);
+      } else {
+        localStorage.removeItem("kompy_ticket_archivo");
+      }
+    });
+  }
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("form[action='kompy_ticket_resultado.html']");
+  const nota = document.getElementById("nota");
+
+  if (!form || !nota) return;
+
+  // Si vuelves atrás, mantenemos el último nombre escrito (opcional)
+  const lastName = localStorage.getItem("kompy_ticket_name");
+  if (lastName && !nota.value) nota.value = lastName;
+
+  form.addEventListener("submit", () => {
+    // Guardamos el nombre del ticket (aunque sea opcional)
+    localStorage.setItem("kompy_ticket_name", (nota.value || "").trim());
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Kompy – Histórico ruta equilibrada</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Fuente e iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          crossorigin="anonymous" />
+
+    <style>
+        :root {
+            --kompy-green: #4CAF50;
+            --kompy-green-dark: #2e7d32;
+            --bg-dark: #050608;
+            --text-light: #f5f5f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f4f7f5;
+            color: #222;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* NAVBAR (mismo diseño que KOMPY / rutas) */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            background: rgba(5, 6, 8, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .navbar-logo img {
+            height: 64px;
+            border-radius: 10px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .navbar-item {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-bottom: 3px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .navbar-item i {
+            font-size: 0.95rem;
+        }
+
+        .navbar-item:hover {
+            color: var(--kompy-green);
+            border-color: var(--kompy-green);
+        }
+
+        .navbar-cta {
+            background: var(--kompy-green);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .navbar-cta:hover {
+            background: var(--kompy-green-dark);
+            box-shadow: 0 8px 18px rgba(76, 175, 80, 0.35);
+            transform: translateY(-1px);
+        }
+
+        /* CONTENIDO */
+        main {
+            padding: 140px 8vw 40px;  /* margen para la navbar fija */
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+            text-align: left;
+            max-width: 900px;
+            margin: 0 auto 24px;
+        }
+        .section-title {
+            font-size: 1.9rem;
+            margin-top: 6px;
+        }
+
+        .section-subtitle {
+            color: #555;
+            font-size: 0.96rem;
+        }
+
+        .results-layout {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 24px 24px 26px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+            border: 1px solid #dceadd;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--kompy-green-dark);
+        }
+
+        .summary-block {
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+        }
+
+        .summary-block p {
+            margin-bottom: 4px;
+        }
+
+        fieldset {
+            border-radius: 14px;
+            border: 1px solid #dceadd;
+            padding: 14px 14px 16px;
+            margin-top: 14px;
+        }
+
+        legend {
+            padding: 0 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--kompy-green-dark);
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 8px 10px;
+            border: 1px solid #d7e5d7;
+            text-align: center;
+        }
+
+        .results-table thead {
+            background: #e3f2fd;
+        }
+
+        .route-image {
+            width: 100%;
+            border-radius: 14px;
+            margin: 20px 0;
+        }
+
+        .actions-row {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary, .btn-primary-small {
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .btn-secondary {
+            background: #f5faf5;
+            border: 1px solid #b5cdb7;
+            color: #234126;
+        }
+
+        .btn-secondary:hover {
+            background: #e2f1e4;
+        }
+
+        .btn-primary-small {
+            background: var(--kompy-green);
+            color: #fff;
+            border: none;
+            font-weight: 600;
+        }
+
+        .btn-primary-small:hover {
+            background: var(--kompy-green-dark);
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="navbar-logo">
+        <img src="kompy_logo_white.png" alt="Kompy">
+        <span>Kompy</span>
+    </div>
+
+    <nav class="navbar-menu">
+        <a href="KOMPY.html#planificador" class="navbar-item">
+            <i class="fa-solid fa-clipboard-list"></i> Planificador
+        </a>
+        <a href="kompy_ticket.html" class="navbar-item">
+            <i class="fa-solid fa-receipt"></i> Subir ticket
+        </a>
+        <a href="kompy_resultados_historicos.html" class="navbar-item">
+            <i class="fa-solid fa-clock-rotate-left"></i> Historial
+        </a>
+        <a href="KOMPY.html#sobre-nosotros" class="navbar-item">
+            <i class="fa-solid fa-circle-info"></i> Sobre nosotros
+        </a>
+        <a href="KOMPY.html#how" class="navbar-item">
+            <i class="fa-solid fa-route"></i> Cómo funciona
+        </a>
+        <a href="kompy_usuario.html" class="navbar-cta">
+            <i class="fa-solid fa-user"></i> Acceder
+        </a>
+    </nav>
+</header>
+
+<main>
+    <div class="section-header">
+        <h1 class="section-title">Detalle histórico – Ruta equilibrada</h1>
+        <p class="section-subtitle">
+            Ejemplo de una ejecución pasada del perfil <b>Equilibrado</b>, buscando balance entre coste y tiempo.
+        </p>
+    </div>
+
+    <div class="results-layout">
+        <div class="card">
+
+            <!-- Resumen general de la ejecución -->
+            <h3>Resumen de la ejecución</h3>
+
+            <div class="summary-block">
+                <p><strong>Fecha:</strong> 27/01/2025</p>
+                <p><strong>Trayecto:</strong> Calle General Pardiñas 48, Madrid → Universidad de Navarra, Madrid</p>
+                <p><strong>Perfil:</strong> Equilibrado (balance coste/tiempo)</p>
+                <p><strong>Precio total:</strong> 40,90 €</p>
+                <p><strong>Tiempo estimado:</strong> 44 min</p>
+                <p><strong>Distancia total:</strong> 10,5 km</p>
+                <p><strong>N.º de paradas:</strong> 2 supermercados</p>
+            </div>
+
+            <!-- Tabla de supermercados y productos -->
+            <fieldset>
+                <legend>Supermercados y productos</legend>
+
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Supermercado</th>
+                            <th>Dirección</th>
+                            <th>Productos comprados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Lidl Iturrama</td>
+                            <td>C/ Iturrama 25, Madrid</td>
+                            <td>
+                                Leche 1L ×2<br>
+                                Yogures naturales ×4
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Mercadona Mutilva</td>
+                            <td>Polígono Mutilva Baja, s/n</td>
+                            <td>
+                                Pechuga de pollo 500g<br>
+                                Manzanas 1kg
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+
+            <!-- Botones de acción -->
+            <div class="actions-row">
+                <a href="kompy_resultados_historicos.html">
+                    <button class="btn-secondary">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Volver al histórico
+                    </button>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

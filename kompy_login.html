@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Kompy – Inicio de sesión</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Fuente e iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          crossorigin="anonymous" />
+
+    <style>
+        :root {
+            --kompy-green: #4CAF50;
+            --kompy-green-dark: #2e7d32;
+            --bg-dark: #050608;
+            --text-light: #f5f5f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f4f7f5;
+            color: #222;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            background: rgba(5, 6, 8, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .navbar-logo img {
+            height: 64px;
+            border-radius: 10px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .navbar-item {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-bottom: 3px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .navbar-item i {
+            font-size: 0.95rem;
+        }
+
+        .navbar-item:hover {
+            color: var(--kompy-green);
+            border-color: var(--kompy-green);
+        }
+
+        .navbar-cta {
+            background: var(--kompy-green);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .navbar-cta:hover {
+            background: var(--kompy-green-dark);
+            box-shadow: 0 8px 18px rgba(76, 175, 80, 0.35);
+            transform: translateY(-1px);
+        }
+
+        /* CONTENIDO */
+        main {
+            padding: 140px 8vw 40px;
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+            max-width: 900px;
+            margin: 0 auto 24px;
+            text-align: center;
+        }
+
+        .section-kicker {
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.78rem;
+            color: var(--kompy-green);
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 1.9rem;
+            margin-top: 6px;
+        }
+
+        .section-subtitle {
+            color: #555;
+            font-size: 0.96rem;
+        }
+
+        .card {
+            max-width: 480px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 24px 24px 26px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+            border: 1px solid #dceadd;
+        }
+
+        form {
+            margin-top: 10px;
+        }
+
+        .form-row {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 9px 11px;
+            border-radius: 10px;
+            border: 1px solid #cfd9cf;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        .form-actions {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--kompy-green);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background: var(--kompy-green-dark);
+        }
+
+        .btn-secondary {
+            background: #f5faf5;
+            color: #234126;
+            padding: 9px 18px;
+            border-radius: 999px;
+            border: 1px solid #b5cdb7;
+            font-size: 0.88rem;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: #e2f1e4;
+        }
+
+        .hint {
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 3px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="navbar-logo">
+        <img src="kompy_logo_white.png" alt="Kompy">
+        <span>Kompy</span>
+    </div>
+
+    <nav class="navbar-menu">
+        <a href="KOMPY.html#planificador" class="navbar-item">
+            <i class="fa-solid fa-clipboard-list"></i> Planificador
+        </a>
+        <a href="kompy_ticket.html" class="navbar-item">
+            <i class="fa-solid fa-receipt"></i> Subir ticket
+        </a>
+        <a href="kompy_resultados_historicos.html" class="navbar-item">
+            <i class="fa-solid fa-clock-rotate-left"></i> Historial
+        </a>
+        <a href="KOMPY.html#sobre-nosotros" class="navbar-item">
+            <i class="fa-solid fa-circle-info"></i> Sobre nosotros
+        </a>
+        <a href="KOMPY.html#how" class="navbar-item">
+            <i class="fa-solid fa-route"></i> Cómo funciona
+        </a>
+        <a href="kompy_usuario.html" class="navbar-cta">
+            <i class="fa-solid fa-user"></i> Acceder
+        </a>
+    </nav>
+</header>
+
+<main>
+    <div class="section-header">
+        <div class="section-kicker">Inicio de sesión</div>
+        <h1 class="section-title">Entra en tu cuenta Kompy</h1>
+        <p class="section-subtitle">
+            Accede con tu nombre de perfil y contraseña creados durante el registro.
+        </p>
+    </div>
+
+    <div class="card">
+        <!-- Acción demo: podrías apuntar a una página "kompy_login_ok.html" que diga "Sesión iniciada" -->
+        <form action="kompy_login_ok.html" method="get">
+            <div class="form-row">
+                <label for="nombre_perfil">Nombre de perfil</label>
+                <input type="text" id="nombre_perfil" name="nombre_perfil" placeholder="Ej. ricardo_kompy" required>
+            </div>
+
+            <div class="form-row">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" placeholder="Tu contraseña" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    Iniciar sesión
+                </button>
+                <a href="kompy_usuario.html">
+                    <button type="button" class="btn-secondary">
+                        Volver a Acceder
+                    </button>
+                </a>
+            </div>
+
+            <p class="hint" style="text-align:center; margin-top:10px;">
+                ¿Todavía no tienes cuenta?
+                <a href="kompy_registro.html" style="color:var(--kompy-green-dark); text-decoration:underline;">
+                    Regístrate aquí
+                </a>.
+            </p>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>

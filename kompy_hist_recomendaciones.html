@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Kompy – Recomendaciones históricas</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Fuente e iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          crossorigin="anonymous" />
+
+    <style>
+        :root {
+            --kompy-green: #4CAF50;
+            --kompy-green-dark: #2e7d32;
+            --bg-dark: #050608;
+            --text-light: #f5f5f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f4f7f5;
+            color: #222;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            background: rgba(5, 6, 8, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .navbar-logo img {
+            height: 64px;
+            border-radius: 10px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .navbar-item {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-bottom: 3px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .navbar-item i {
+            font-size: 0.95rem;
+        }
+
+        .navbar-item:hover {
+            color: var(--kompy-green);
+            border-color: var(--kompy-green);
+        }
+
+        .navbar-cta {
+            background: var(--kompy-green);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .navbar-cta:hover {
+            background: var(--kompy-green-dark);
+            box-shadow: 0 8px 18px rgba(76, 175, 80, 0.35);
+            transform: translateY(-1px);
+        }
+
+        /* CONTENIDO GENERAL */
+        main {
+            padding: 140px 8vw 40px;
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+            max-width: 900px;
+            margin: 0 auto 24px;
+        }
+        .section-title {
+            font-size: 1.9rem;
+            margin-top: 6px;
+        }
+
+        .section-subtitle {
+            color: #555;
+            font-size: 0.96rem;
+        }
+
+        .results-layout {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 24px 24px 26px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+            border: 1px solid #dceadd;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--kompy-green-dark);
+        }
+
+        fieldset {
+            border-radius: 14px;
+            border: 1px solid #dceadd;
+            padding: 14px 14px 16px;
+            margin-top: 16px;
+        }
+
+        legend {
+            padding: 0 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--kompy-green-dark);
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 8px 10px;
+            border: 1px solid #d7e5d7;
+            text-align: left;
+        }
+
+        .results-table thead {
+            background: #e8f5e9;
+        }
+
+        .results-table th:nth-child(1),
+        .results-table td:nth-child(1) {
+            width: 35%;
+        }
+
+        .results-table th:nth-child(2),
+        .results-table td:nth-child(2) {
+            width: 65%;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #e8f5e9;
+            color: var(--kompy-green-dark);
+            font-size: 0.82rem;
+            margin-bottom: 8px;
+        }
+
+        .actions-row {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-secondary {
+            padding: 10px 18px;
+            border-radius: 999px;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            background: #f5faf5;
+            border: 1px solid #b5cdb7;
+            color: #234126;
+        }
+
+        .btn-secondary:hover {
+            background: #e2f1e4;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="navbar-logo">
+        <img src="kompy_logo_white.png" alt="Kompy">
+        <span>Kompy</span>
+    </div>
+
+    <nav class="navbar-menu">
+        <a href="KOMPY.html#planificador" class="navbar-item">
+            <i class="fa-solid fa-clipboard-list"></i> Planificador
+        </a>
+        <a href="kompy_ticket.html" class="navbar-item">
+            <i class="fa-solid fa-receipt"></i> Subir ticket
+        </a>
+        <a href="kompy_resultados_historicos.html" class="navbar-item">
+            <i class="fa-solid fa-clock-rotate-left"></i> Historial
+        </a>
+        <a href="KOMPY.html#sobre-nosotros" class="navbar-item">
+            <i class="fa-solid fa-circle-info"></i> Sobre nosotros
+        </a>
+        <a href="KOMPY.html#how" class="navbar-item">
+            <i class="fa-solid fa-route"></i> Cómo funciona
+        </a>
+        <a href="kompy_usuario.html" class="navbar-cta">
+            <i class="fa-solid fa-user"></i> Acceder
+        </a>
+    </nav>
+</header>
+
+<main>
+    <div class="section-header">
+        <h1 class="section-title">Recomendaciones generadas por Kompy IA</h1>
+        <p class="section-subtitle">
+            A partir de tus tickets históricos, perfiles de ruta y supermercados más frecuentes,
+            Kompy genera sugerencias inteligentes para ahorrar dinero y tiempo en tus próximas compras.
+        </p>
+    </div>
+
+    <div class="results-layout">
+        <div class="card">
+
+            <div class="pill">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                Motor de IA generativa
+            </div>
+
+            <p style="font-size:0.95rem; margin-bottom:12px;">
+                Estas recomendaciones se crean a partir de tu patrón histórico: frecuencia de compra,
+                productos repetidos, elección de supermercados y tiempo invertido en cada perfil
+                (ahorrador, rápido y equilibrado).
+            </p>
+
+            <!-- BLOQUE 1: Recomendaciones generales -->
+            <fieldset>
+                <legend>Recomendaciones generales</legend>
+
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Recomendación</th>
+                            <th>Motivo (detectado por la IA)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-generales">
+                        <tr>
+                            <td colspan="2">Generando recomendaciones…</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+
+            <!-- BLOQUE 2: Sugerencias por perfil -->
+            <fieldset>
+                <legend>Sugerencias por perfil de ruta</legend>
+
+                <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Perfil</th>
+                            <th>Consejo de Kompy IA</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbl-perfiles">
+                        <tr>
+                            <td colspan="2">Cargando…</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </fieldset>
+
+            <!-- BLOQUE 3: Próxima compra -->
+            <fieldset>
+                <legend>Ideas para tu próxima compra</legend>
+                <p style="font-size:0.9rem; margin-bottom:8px;" id="txt-proxima">
+                    Sugerencias generadas a partir de tu último ticket.
+                </p>
+                <ul style="font-size:0.9rem; margin-left:18px;" id="ul-proxima">
+                    <li>—</li>
+                </ul>
+            </fieldset>
+
+            <div class="actions-row">
+                <a href="kompy_ticket_resultadohtml">
+                    <button class="btn-secondary">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Volver al resultado del ticket
+                    </button>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</main>
+<script>
+// -------------------
+// Kompy IA: Recomendaciones dinámicas (Bedrock)
+// -------------------
+document.addEventListener("DOMContentLoaded", async () => {
+  const ocrText = localStorage.getItem("kompy_ocr_text") || "";
+  const ticketName = localStorage.getItem("kompy_ticket_name") || "Sin nombre";
+
+  function readJSON(key, fallback) {
+    try {
+      const v = JSON.parse(localStorage.getItem(key));
+      return (v === null || v === undefined) ? fallback : v;
+    } catch {
+      return fallback;
+    }
+  }
+
+  const history = readJSON("kompy_ticket_history", []).slice(0, 10);
+
+  const tblGenerales = document.getElementById("tbl-generales");
+  const tblPerfiles = document.getElementById("tbl-perfiles");
+  const ulProxima = document.getElementById("ul-proxima");
+  const txtProxima = document.getElementById("txt-proxima");
+
+  if (!ocrText.trim()) {
+    if (tblGenerales) tblGenerales.innerHTML = `<tr><td colspan="2">No hay OCR disponible. Sube un ticket primero.</td></tr>`;
+    if (tblPerfiles) tblPerfiles.innerHTML = `<tr><td colspan="2">—</td></tr>`;
+    if (ulProxima) ulProxima.innerHTML = `<li>Sube un ticket en la sección “Subir ticket”.</li>`;
+    return;
+  }
+
+  try {
+    const resp = await fetch("http://localhost:5000/recomendaciones", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ocr_text: ocrText,
+        ticket_name: ticketName,
+        history
+      })
+    });
+
+    const data = await resp.json();
+    const payload = data.data ?? data;
+
+    // Debug: Muestra el JSON en la consola para verificar que lleguen los datos
+    console.log('Payload recibido:', payload);
+
+    // --- Si la respuesta no es correcta, mostrar el error ---
+    if (!resp.ok) {
+      const msg = (data && (data.error || data.detail))
+        ? `${data.error || "Error"} ${data.detail ? "– " + data.detail : ""}`
+        : "Error";
+      if (tblGenerales) tblGenerales.innerHTML = `<tr><td colspan="2">${msg}</td></tr>`;
+      if (tblPerfiles) tblPerfiles.innerHTML = `<tr><td colspan="2">No se pudieron generar sugerencias.</td></tr>`;
+      if (ulProxima) ulProxima.innerHTML = `<li>Revisa la configuración del backend.</li>`;
+      return;
+    }
+
+    // --- Recomendaciones generales ---
+    const generales = Array.isArray(payload.recomendaciones_generales)
+      ? payload.recomendaciones_generales
+      : [];
+
+    if (tblGenerales) {
+      tblGenerales.innerHTML = generales.length
+        ? generales.map(r => `
+            <tr>
+              <td>${escapeHtml(r.recomendacion || "")}</td>
+              <td>${escapeHtml(r.motivo || "")}</td>
+            </tr>
+          `).join("")
+        : `<tr><td colspan="2">No se generaron recomendaciones generales.</td></tr>`;
+    }
+
+    // --- Sugerencias por perfil ---
+    const perfiles = payload.sugerencias_por_perfil || {};
+
+    if (tblPerfiles) {
+      const ah = Array.isArray(perfiles.ahorro)
+        ? perfiles.ahorro.join(" • ")
+        : (perfiles.ahorro || "—");
+
+      const ra = Array.isArray(perfiles.rapido)
+        ? perfiles.rapido.join(" • ")
+        : (perfiles.rapido || "—");
+
+      const eq = Array.isArray(perfiles.equilibrado)
+        ? perfiles.equilibrado.join(" • ")
+        : (perfiles.equilibrado || "—");
+
+      tblPerfiles.innerHTML = `
+        <tr><td>Ahorro</td><td>${escapeHtml(ah)}</td></tr>
+        <tr><td>Rápido</td><td>${escapeHtml(ra)}</td></tr>
+        <tr><td>Equilibrado</td><td>${escapeHtml(eq)}</td></tr>
+      `;
+    }
+
+    // --- Próxima compra ---
+    const proxima = Array.isArray(payload.proxima_compra)
+      ? payload.proxima_compra
+      : [];
+
+    if (txtProxima) {
+      txtProxima.textContent = `Sugerencias para tu próxima compra (basadas en: ${ticketName}).`;
+    }
+
+    if (ulProxima) {
+      ulProxima.innerHTML = proxima.length
+        ? proxima.slice(0, 6).map(x => `<li>${escapeHtml(String(x))}</li>`).join("")
+        : `<li>—</li>`;
+    }
+
+  } catch (e) {
+    console.error(e);
+    if (tblGenerales) tblGenerales.innerHTML = `<tr><td colspan="2">No se pudo contactar con el backend (¿está corriendo en http://localhost:5000?).</td></tr>`;
+    if (tblPerfiles) tblPerfiles.innerHTML = `<tr><td colspan="2">—</td></tr>`;
+    if (ulProxima) ulProxima.innerHTML = `<li>Inicia el backend y vuelve a cargar esta página.</li>`;
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+});
+</script>
+
+</body>
+</html>

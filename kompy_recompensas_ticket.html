@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Kompy – Recompensas por tickets</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Fuente e iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          crossorigin="anonymous" />
+
+    <style>
+        :root {
+            --kompy-green: #4CAF50;
+            --kompy-green-dark: #2e7d32;
+            --bg-dark: #050608;
+            --text-light: #f5f5f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f4f7f5;
+            color: #222;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            background: rgba(5, 6, 8, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .navbar-logo img {
+            height: 64px;
+            border-radius: 10px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .navbar-item {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-bottom: 3px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .navbar-item i { font-size: 0.95rem; }
+
+        .navbar-item:hover {
+            color: var(--kompy-green);
+            border-color: var(--kompy-green);
+        }
+
+        .navbar-cta {
+            background: var(--kompy-green);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .navbar-cta:hover {
+            background: var(--kompy-green-dark);
+            box-shadow: 0 8px 18px rgba(76, 175, 80, 0.35);
+            transform: translateY(-1px);
+        }
+
+        /* CONTENIDO */
+        main { padding: 140px 8vw 50px; }
+
+        .section-header { max-width: 900px; margin: 0 auto 26px; }
+
+        .section-title { font-size: 1.9rem; margin-bottom: 8px; }
+
+        .section-subtitle { font-size: 0.98rem; color: #555; }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 24px 24px 26px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+            border: 1px solid #dceadd;
+        }
+
+        .card + .card { margin-top: 22px; }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--kompy-green-dark);
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 6px;
+        }
+
+        /* GRID */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+            margin-top: 20px;
+        }
+
+        .highlight-number {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--kompy-green-dark);
+        }
+
+        .label-small { font-size: 0.85rem; color: #777; }
+
+        /* Barra */
+        .progress-wrapper { margin-top: 10px; }
+
+        .progress-track {
+            width: 100%;
+            height: 10px;
+            border-radius: 999px;
+            background: #e4efe5;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4CAF50, #81c784);
+        }
+
+        .progress-text { font-size: 0.85rem; margin-top: 6px; color: #555; }
+
+        /* Recompensas */
+        .rewards-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 16px;
+        }
+
+        .rewards-column h4 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: #2e7d32;
+            display:flex;
+            align-items:center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .reward-item {
+            font-size: 0.9rem;
+            padding: 10px 10px;
+            border-radius: 10px;
+            background: #f6fbf7;
+            border: 1px solid #d8e7da;
+            margin-bottom: 6px;
+        }
+
+        .reward-item.used {
+            background: #f4f4f4;
+            border-style: dashed;
+            color: #666;
+        }
+
+        .reward-row {
+            display:flex;
+            align-items:flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .reward-actions {
+            display:flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .btn-redeem {
+            background: var(--kompy-green);
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            display:inline-flex;
+            align-items:center;
+            gap: 8px;
+            transition: 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-redeem:hover { background: var(--kompy-green-dark); }
+
+        .badge-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            background: #e8f5e9;
+            color: #2e7d32;
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 900px) {
+            .grid-2 { grid-template-columns: minmax(0, 1fr); }
+            .rewards-list { grid-template-columns: minmax(0, 1fr); }
+            .navbar { padding: 0 20px; }
+        }
+
+        @media (max-width: 720px) {
+            .navbar-menu { display: none; }
+            main { padding: 120px 6vw 40px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="navbar-logo">
+        <img src="kompy_logo_white.png" alt="Kompy">
+        <span>Kompy</span>
+    </div>
+
+    <nav class="navbar-menu">
+        <a href="KOMPY.html#planificador" class="navbar-item">
+            <i class="fa-solid fa-clipboard-list"></i> Planificador
+        </a>
+        <a href="kompy_ticket.html" class="navbar-item">
+            <i class="fa-solid fa-receipt"></i> Subir ticket
+        </a>
+        <a href="kompy_resultados_historicos.html" class="navbar-item">
+            <i class="fa-solid fa-clock-rotate-left"></i> Historial
+        </a>
+        <a href="KOMPY.html#sobre-nosotros" class="navbar-item">
+            <i class="fa-solid fa-circle-info"></i> Sobre nosotros
+        </a>
+        <a href="KOMPY.html#how" class="navbar-item">
+            <i class="fa-solid fa-route"></i> Cómo funciona
+        </a>
+        <a href="kompy_usuario.html" class="navbar-cta">
+            <i class="fa-solid fa-user"></i> Acceder
+        </a>
+    </nav>
+</header>
+
+<main>
+    <div class="section-header">
+        <h1 class="section-title">Recompensas por subir tickets</h1>
+        <p class="section-subtitle">
+            Kompy te premia por ayudarnos a entender mejor tus compras. Cada ticket que subes alimenta tu histórico,
+            mejora tus recomendaciones y desbloquea ventajas para ti.
+        </p>
+    </div>
+
+    <div class="card">
+        <h3><i class="fa-solid fa-circle-info"></i> Cómo funcionan las recompensas</h3>
+        <p>
+            <strong>Cada 5 tickets subidos</strong>, en tu <strong>siguiente compra</strong> tendrás una
+            <strong>devolución del 5% del importe total</strong>.
+        </p>
+        <p>
+            Además, al final de cada mes, los <strong>10 usuarios con más tickets subidos</strong>
+            reciben una <strong>compensación extra</strong>:
+        </p>
+        <p style="margin-top:4px;">
+            <span class="badge-pill">
+                <i class="fa-solid fa-trophy"></i> Recompensa mensual
+            </span><br>
+            Un <strong>bono Kompy de 10€</strong> para gastar en su supermercado favorito asociado.
+        </p>
+    </div>
+
+    <div class="card" style="margin-top:26px;">
+        <h3><i class="fa-solid fa-clock-rotate-left"></i> Historial de tickets confirmados</h3>
+        <p class="label-small">Últimos 5 tickets subidos (nombre y fecha/hora).</p>
+        <div id="ticket-history" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:24px;">
+        <div class="card">
+            <h3><i class="fa-solid fa-receipt"></i> Tu progreso con tickets</h3>
+            <p class="label-small">Resumen del ciclo actual de recompensas</p>
+
+            <p style="margin-top:10px;">
+                <span class="highlight-number" id="cycle-count">0</span> tickets subidos en este ciclo
+            </p>
+            <p class="label-small">Cada 5 tickets: +5% devolución en tu próxima compra</p>
+
+            <div class="progress-wrapper">
+                <div class="progress-track">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+                </div>
+                <p class="progress-text">
+                    Te quedan <strong><span id="remaining-count">5</span> tickets</strong>
+                    para tu próximo descuento del <strong>5%</strong>.
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3><i class="fa-solid fa-crown"></i> Tu posición este mes</h3>
+            <p>
+                <strong>¡Enhorabuena!</strong> Este mes eres el
+                <strong>usuario con más tickets subidos</strong> en Kompy.
+            </p>
+            <p style="margin-top:8px;">
+                Eso te coloca automáticamente en el grupo de usuarios con derecho a la
+                <strong>compensación extra mensual</strong> (top 10).
+            </p>
+            <p style="margin-top:10px; font-size:0.9rem; color:#555;">
+                Al cierre del mes, tu recompensa extra quedará registrada en tu historial,
+                junto con la fecha y el motivo (top 10 de tickets subidos).
+            </p>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top:26px;">
+        <h3><i class="fa-solid fa-gifts"></i> Tus recompensas</h3>
+        <p class="label-small">Resumen de las ventajas que tienes disponibles y las que ya has utilizado.</p>
+
+        <div class="rewards-list">
+            <div class="rewards-column">
+                <h4>
+                    <span><i class="fa-solid fa-circle-check"></i> Recompensas disponibles</span>
+                </h4>
+                <div id="rewards-available"></div>
+            </div>
+
+            <div class="rewards-column">
+                <h4>
+                    <span><i class="fa-solid fa-clock-rotate-left"></i> Recompensas utilizadas</span>
+                </h4>
+                <div id="rewards-used"></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const esc = (s) => String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+
+  function nowStamp() {
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2,"0");
+    return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function readJSON(key, fallback) {
+    try {
+      const v = JSON.parse(localStorage.getItem(key));
+      return (v === null || v === undefined) ? fallback : v;
+    } catch {
+      return fallback;
+    }
+  }
+
+  function writeJSON(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  function showBanner(message) {
+    const div = document.createElement("div");
+    div.textContent = message;
+    div.style.position = "fixed";
+    div.style.top = "110px";
+    div.style.left = "50%";
+    div.style.transform = "translateX(-50%)";
+    div.style.background = "white";
+    div.style.border = "1px solid #dceadd";
+    div.style.borderRadius = "999px";
+    div.style.padding = "10px 16px";
+    div.style.boxShadow = "0 12px 30px rgba(0,0,0,0.12)";
+    div.style.zIndex = "2000";
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 4500);
+  }
+
+  // --- Progreso ciclo 0..4 ---
+  let cycleCount = Number(localStorage.getItem("kompy_ticket_cycle_count") || "0");
+  if (Number.isNaN(cycleCount) || cycleCount < 0) cycleCount = 0;
+
+  const remaining = 5 - cycleCount;
+  const pct = Math.round((cycleCount / 5) * 100);
+
+  const cycleEl = document.getElementById("cycle-count");
+  const remEl = document.getElementById("remaining-count");
+  const fillEl = document.getElementById("progress-fill");
+
+  if (cycleEl) cycleEl.textContent = String(cycleCount);
+  if (remEl) remEl.textContent = String(remaining);
+  if (fillEl) fillEl.style.width = pct + "%";
+
+  // --- Historial tickets: SOLO LOS ÚLTIMOS 5 ---
+  const history = readJSON("kompy_ticket_history", []);
+  const historyBox = document.getElementById("ticket-history");
+
+  function renderHistory() {
+    if (!historyBox) return;
+
+    if (history.length === 0) {
+      historyBox.innerHTML = `<div class="reward-item used">Aún no has confirmado ningún ticket.</div>`;
+      return;
+    }
+
+    const last5 = history.slice(0, 5).map(item => {
+      const safeName = esc(item.name || "Sin nombre");
+      const safeDt = esc(item.datetime || "");
+      return `<div class="reward-item"><strong>${safeName}</strong><br><span style="font-size:0.85rem; color:#666;">${safeDt}</span></div>`;
+    }).join("");
+
+    historyBox.innerHTML = last5;
+  }
+
+  renderHistory();
+
+  // --- Recompensas disponibles / usadas ---
+  let available = readJSON("kompy_rewards_available", []);
+  let used = readJSON("kompy_rewards_used", []);
+
+  const availBox = document.getElementById("rewards-available");
+  const usedBox = document.getElementById("rewards-used");
+
+  function renderRewardAvailable(r, idx){
+    const title = esc(r.title || "Recompensa");
+    const dt = esc(r.createdAt || "");
+    const detail = esc(r.detail || "");
+
+    // Mostramos botón "Usar" (tú pediste un botón al lado)
+    return `
+      <div class="reward-item">
+        <div class="reward-row">
+          <div>
+            <strong>${title}</strong><br>
+            ${detail ? detail + "<br>" : ""}
+            <span style="font-size:0.8rem; color:#777;">Generada el <strong>${dt}</strong></span>
+          </div>
+          <div class="reward-actions">
+            <button class="btn-redeem" data-redeem-index="${idx}">
+              <i class="fa-solid fa-hand-holding-dollar"></i> Usar
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderRewardUsed(r){
+    const title = esc(r.title || "Recompensa");
+    const dt = esc(r.usedAt || r.createdAt || "");
+    const detail = esc(r.detail || "");
+    return `
+      <div class="reward-item used">
+        <strong>${title}</strong><br>
+        ${detail ? detail + "<br>" : ""}
+        <span style="font-size:0.8rem; color:#777;">Usada el <strong>${dt}</strong></span>
+      </div>
+    `;
+  }
+
+  function renderRewards() {
+    if (availBox) {
+      if (available.length === 0) {
+        availBox.innerHTML = `<div class="reward-item used">No tienes recompensas disponibles todavía.</div>`;
+      } else {
+        availBox.innerHTML = available.map((r,i) => renderRewardAvailable(r,i)).join("");
+      }
+    }
+
+    if (usedBox) {
+      if (used.length === 0) {
+        usedBox.innerHTML = `<div class="reward-item used">Aún no has utilizado ninguna recompensa.</div>`;
+      } else {
+        usedBox.innerHTML = used.slice(0, 3).map(r => renderRewardUsed(r)).join("");
+      }
+    }
+  }
+
+  renderRewards();
+
+  // --- Click en "Usar" recompensa ---
+  document.addEventListener("click", (ev) => {
+    const btn = ev.target.closest("[data-redeem-index]");
+    if (!btn) return;
+
+    const idx = Number(btn.getAttribute("data-redeem-index"));
+    if (!Number.isFinite(idx) || idx < 0 || idx >= available.length) return;
+
+    // Último ticket (del histórico)
+    const lastTicketName = history?.[0]?.name ? String(history[0].name) : "tu último ticket";
+
+    // Movemos recompensa de disponibles -> usadas
+    const reward = available.splice(idx, 1)[0];
+    const usedReward = {
+      ...reward,
+      usedAt: nowStamp(),
+      detail: reward?.detail ? reward.detail : "Devolución aplicada",
+    };
+    used.unshift(usedReward); // la ponemos arriba en usadas
+
+    writeJSON("kompy_rewards_available", available);
+    writeJSON("kompy_rewards_used", used);
+
+    renderRewards();
+
+    showBanner(`Se ha hecho una devolución a tu cuenta bancaria del 5% de la compra (${lastTicketName}).`);
+  });
+
+  // --- Banner de “ticket confirmado” si existe ---
+  const msg = localStorage.getItem("kompy_flash_ticket_confirmed");
+  if (msg) {
+    showBanner(msg);
+    localStorage.removeItem("kompy_flash_ticket_confirmed");
+  }
+});
+</script>
+
+</body>
+</html>

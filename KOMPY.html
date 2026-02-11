@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Kompy – Planificador inteligente de compras</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Fuente principal y librería de iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        :root {
+            --kompy-green: #4CAF50;
+            --kompy-green-dark: #2e7d32;
+            --bg-dark: #050608;
+            --text-light: #f5f5f5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #222;
+            background-color: #f4f7f5;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            background: rgba(5, 6, 8, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .navbar-logo img {
+            height: 64px;
+            border-radius: 10px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .navbar-item {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-bottom: 3px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .navbar-item i {
+            font-size: 0.95rem;
+        }
+
+        .navbar-item:hover {
+            color: var(--kompy-green);
+            border-color: var(--kompy-green);
+        }
+
+        .navbar-cta {
+            background: var(--kompy-green);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .navbar-cta:hover {
+            background: var(--kompy-green-dark);
+            box-shadow: 0 8px 18px rgba(76, 175, 80, 0.35);
+            transform: translateY(-1px);
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            background:
+                linear-gradient(135deg, rgba(5, 6, 8, 0.85), rgba(46, 125, 50, 0.82)),
+                url("kompy_hero.jpg") center center / cover no-repeat;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            padding: 0 7vw;
+        }
+
+        .hero-inner {
+            margin-top: 64px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+            gap: 60px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .hero-title {
+            font-size: 3.2rem;
+            line-height: 1.05;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.05rem;
+            color: rgba(245, 245, 245, 0.85);
+            margin-bottom: 28px;
+            max-width: 520px;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .hero-badge {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            border-radius: 999px;
+            padding: 6px 14px;
+            border: 1px solid rgba(200, 230, 201, 0.6);
+            color: #e8f5e9;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .btn-primary {
+            background: #ffffff;
+            color: var(--kompy-green-dark);
+            padding: 12px 26px;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+            background: #f5fff6;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: #e0e0e0;
+            padding: 11px 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(230, 230, 230, 0.4);
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+        }
+
+        .btn-ghost i {
+            font-size: 1rem;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(250, 250, 250, 0.06);
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+
+        .hero-about {
+            background: rgba(3, 20, 3, 0.78);
+            border-radius: 18px;
+            padding: 22px 22px 20px;
+            border: 1px solid rgba(200, 230, 201, 0.4);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+        }
+
+        .hero-about h2 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .hero-about p {
+            font-size: 0.9rem;
+            color: rgba(235, 248, 236, 0.9);
+            margin-bottom: 16px;
+        }
+
+        .hero-about-list {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+        }
+
+        .hero-about-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.88rem;
+            color: rgba(230, 244, 234, 0.95);
+        }
+
+        .hero-about-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            background: rgba(76, 175, 80, 0.16);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #C8E6C9;
+            flex-shrink: 0;
+        }
+
+        section {
+            padding: 80px 8vw;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 34px;
+        }
+
+        .section-kicker {
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            font-size: 0.78rem;
+            color: var(--kompy-green);
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 1.9rem;
+            margin-top: 8px;
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            font-size: 0.98rem;
+            color: #666;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 26px;
+            margin-top: 26px;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 22px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(220, 234, 223, 0.8);
+        }
+
+        .feature-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 12px;
+            background: #e8f5e9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--kompy-green-dark);
+            margin-bottom: 14px;
+        }
+
+        .feature-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-text {
+            font-size: 0.92rem;
+            color: #555;
+        }
+
+        #planificador .planner-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+            gap: 28px;
+            align-items: flex-start;
+            margin-top: 16px;
+        }
+
+        .planner-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 22px 22px 24px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(220, 234, 223, 0.9);
+        }
+
+        .planner-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 14px;
+            color: var(--kompy-green-dark);
+        }
+
+        .form-row {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        textarea {
+            width: 100%;
+            padding: 9px 11px;
+            border-radius: 10px;
+            border: 1px solid #cfd9cf;
+            font-size: 0.9rem;
+            font-family: inherit;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .tag {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            border: 1px solid #cfd9cf;
+            color: #444;
+            background: #f9fbf9;
+        }
+
+        .planner-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .btn-secondary {
+            padding: 9px 16px;
+            border-radius: 999px;
+            border: 1px solid #b0c7b1;
+            background: #f5faf5;
+            font-size: 0.86rem;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: #e1f0e2;
+        }
+
+        .planner-side {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .pill {
+            font-size: 0.82rem;
+            border-radius: 999px;
+            padding: 6px 11px;
+            background: #e8f5e9;
+            color: var(--kompy-green-dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mini-metric {
+            font-size: 0.95rem;
+            margin-top: 6px;
+            color: #444;
+        }
+
+        #contact .contact-inner {
+            max-width: 760px;
+            margin: 0 auto;
+            margin-top: 20px;
+        }
+
+        #contact .contact-row {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+            gap: 26px;
+        }
+
+        .contact-info p {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        .social-row {
+            margin-top: 8px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .social-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 999px;
+            border: 1px solid #cfd9cf;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #444;
+            font-size: 0.9rem;
+        }
+
+        .social-icon:hover {
+            background: #e8f5e9;
+            color: var(--kompy-green-dark);
+        }
+
+        /* BLOQUE SOBRE NOSOTROS (DENTRO DE CONTACTO) */
+        .team-block {
+            max-width: 900px;
+            margin: 30px auto 32px;
+            text-align: center;
+        }
+
+        .team-block h3 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+            color: var(--kompy-green-dark);
+        }
+
+        .team-block p {
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+            margin-top: 22px;
+        }
+
+        .team-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 18px 14px 20px;
+            border: 1px solid #dceadd;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.05);
+        }
+
+        .team-photo {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            object-fit: cover;
+	    object-position: center;
+            margin-bottom: 10px;
+            border: 2px solid #e8f5e9;
+        }
+
+        .team-name {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .team-role {
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 6px;
+        }
+
+        .team-email {
+            font-size: 0.82rem;
+            color: #2e7d32;
+            word-break: break-all;
+        }
+
+        footer {
+            padding: 24px 8vw 28px;
+            background: #050608;
+            color: rgba(250, 250, 250, 0.75);
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        footer a {
+            color: rgba(226, 245, 230, 0.9);
+        }
+
+        @media (max-width: 960px) {
+            .hero-inner {
+                grid-template-columns: minmax(0, 1fr);
+                gap: 34px;
+            }
+
+            #planificador .planner-layout,
+            #contact .contact-row {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .navbar-menu {
+                gap: 16px;
+            }
+
+            .team-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 720px) {
+            .navbar-menu {
+                display: none;
+            }
+
+            .hero {
+                padding: 0 5vw;
+            }
+
+            .hero-title {
+                font-size: 2.4rem;
+            }
+
+            .features-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .team-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="navbar-logo">
+        <img src="kompy_logo_white.png" alt="Kompy">
+        <span>Kompy</span>
+    </div>
+
+    <nav class="navbar-menu">
+        <a href="#planificador" class="navbar-item">
+            <i class="fa-solid fa-clipboard-list"></i> Planificador
+        </a>
+        <a href="kompy_ticket.html" class="navbar-item">
+            <i class="fa-solid fa-receipt"></i> Subir ticket
+        </a>
+        <a href="kompy_resultados_historicos.html" class="navbar-item">
+            <i class="fa-solid fa-clock-rotate-left"></i> Historial
+        </a>
+        <!-- AHORA APUNTA AL BLOQUE DENTRO DE CONTACTO -->
+        <a href="#sobre-nosotros" class="navbar-item">
+            <i class="fa-solid fa-circle-info"></i> Sobre nosotros
+        </a>
+        <a href="#how" class="navbar-item">
+            <i class="fa-solid fa-route"></i> Cómo funciona
+        </a>
+        <a href="kompy_usuario.html" class="navbar-cta">
+            <i class="fa-solid fa-user"></i> Acceder
+        </a>
+    </nav>
+</header>
+
+<section class="hero" id="home">
+    <div class="hero-inner">
+        <div>
+            <div class="hero-badges">
+                <span class="hero-badge"><i>Save more, Live Smarter </i></span>
+            </div>
+            <h1 class="hero-title">Planifica tu compra como si tuvieras un data team detrás.</h1>
+            <p class="hero-subtitle">
+                Kompy combina datos reales de supermercados, rutas y tiempo para proponerte el recorrido
+                más inteligente según tu perfil: ahorrador, rápido o equilibrado.
+            </p>
+
+            <div class="hero-actions">
+                <a href="#planificador">
+                    <button class="btn-primary">
+                        <i class="fa-solid fa-shopping-bag"></i>
+                        Planifica tu próxima compra
+                    </button>
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-about" id="about">
+            <h2>Sobre Kompy</h2>
+            <p>
+                Kompy es tu copiloto digital para hacer la compra: analiza tu lista, tus rutas y tu tiempo
+                para ayudarte a ahorrar dinero y minutos en cada desplazamiento.
+            </p>
+
+            <ul class="hero-about-list">
+                <li class="hero-about-item">
+                    <div class="hero-about-icon">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </div>
+                    <span>
+                        <b>Lista inteligente</b><br>
+                        Descompone tu lista en categorías y detecta productos repetidos para comparar mejor.
+                    </span>
+                </li>
+                <li class="hero-about-item">
+                    <div class="hero-about-icon">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </div>
+                    <span>
+                        <b>Rutas optimizadas</b><br>
+                        Combina precios, ubicaciones y tiempo para proponerte rutas ahorradora, rápida y equilibrada.
+                    </span>
+                </li>
+                <li class="hero-about-item">
+                    <div class="hero-about-icon">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <span>
+                        <b>Histórico de tickets</b><br>
+                        Aprende de tus compras anteriores para detectar patrones de gasto y oportunidades de ahorro.
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- PLANIFICADOR -->
+<section id="planificador">
+    <div class="section-header">
+        <h2 class="section-title">Planificador Kompy.</h2>
+        <p class="section-subtitle">
+            Completa los siguientes datos para generar una compra de la lista optimizada.
+        </p>
+    </div>
+
+    <div class="planner-layout">
+        <div class="planner-card">
+            <h3>Datos de la ruta</h3>
+
+            <form action="kompy_resultados.html" method="get">
+                <div class="form-row">
+                    <label for="origen">Dirección de origen</label>
+                    <input type="text" id="origen" name="origen" placeholder="Calle, número, ciudad" required>
+                </div>
+
+                <div class="form-row">
+                    <label for="destino">Dirección de destino</label>
+                    <input type="text" id="destino" name="destino" placeholder="Calle, número, ciudad" required>
+                </div>
+
+                <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div>
+                        <label for="fecha">Fecha</label>
+                        <input type="date" id="fecha" name="fecha" required>
+                    </div>
+                    <div>
+                        <label for="hora">Hora</label>
+                        <input type="time" id="hora" name="hora" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label for="lista">Lista de la compra</label>
+                    <textarea id="lista" name="lista_compra"
+                              placeholder="Leche semidesnatada&#10;Huevos L&#10;Pechuga de pollo..."
+                              required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <label>Supermercados preferidos</label>
+                    <div class="tag-row">
+                        <label class="tag"><input type="checkbox" name="mercadona"> Mercadona</label>
+                        <label class="tag"><input type="checkbox" name="carrefour"> Carrefour</label>
+                        <label class="tag"><input type="checkbox" name="lidl"> Lidl</label>
+                        <label class="tag"><input type="checkbox" name="dia"> Dia</label>
+                        <label class="tag"><input type="checkbox" name="alcampo"> Alcampo</label>
+                    </div>
+                </div>
+
+                <div class="planner-actions">
+                    <button type="reset" class="btn-secondary">Limpiar formulario</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fa-solid fa-location-arrow"></i>
+                        Calcular rutas 
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="planner-side">
+            <div class="planner-card">
+                <h3>Perfiles de ruta</h3>
+                <p class="mini-metric">
+                    <span class="pill"><i class="fa-solid fa-piggy-bank"></i> Ahorro</span><br>
+                    Minimiza el coste total, priorizando supermercados con mejor precio medio.
+                </p>
+                <p class="mini-metric" style="margin-top:10px;">
+                    <span class="pill"><i class="fa-solid fa-bolt"></i> Rápida</span><br>
+                    Reduce el tiempo total del recorrido, con menos paradas y rutas directas.
+                </p>
+                <p class="mini-metric" style="margin-top:10px;">
+                    <span class="pill"><i class="fa-solid fa-scale-balanced"></i> Equilibrada</span><br>
+                    Balancea coste y tiempo, manteniendo una experiencia cómoda.
+                </p>
+            </div>
+
+            <div class="planner-card">
+                <h3>¿Qué hace Kompy con estos datos?</h3>
+                <p class="mini-metric">
+                    Kompy consume APIs reales de Google y AWS para obtener mediante ML rutas optimizadas según los tres perfiles nombrados anteriormente. ¡Consigue obtener los mejores precios en el menor tiempo posible!
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CÓMO FUNCIONA -->
+<section id="how">
+    <div class="section-header">
+        <div class="section-kicker">Cómo funciona</div>
+        <h2 class="section-title">Tres pasos para dejar de improvisar la compra.</h2>
+        <p class="section-subtitle">
+            La idea es sencilla: tú decides qué necesitas, Kompy decide cómo hacerlo de forma más eficiente.
+        </p>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </div>
+            <h3 class="feature-title">1. Define tu compra</h3>
+            <p class="feature-text">
+                Escribe tu lista, tu origen, tu destino y el tiempo aproximado con el que cuentas.
+            </p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fa-solid fa-brain"></i>
+            </div>
+            <h3 class="feature-title">2. Kompy calcula</h3>
+            <p class="feature-text">
+                El modelo cruza precios, localizaciones y rutas para generar las tres mejores opciones.
+            </p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fa-solid fa-check-circle"></i>
+            </div>
+            <h3 class="feature-title">3. Eliges y sigues la ruta</h3>
+            <p class="feature-text">
+                Visualiza las paradas, el coste previsto y el tiempo estimado. Tú decides qué perfil se adapta mejor a tu día.
+            </p>
+        </div>
+    </div>
+</section>
+
+
+
+    <!-- BLOQUE SOBRE NOSOTROS AL QUE APUNTA EL MENÚ -->
+    <section id="sobre-nosotros" >
+        <div class="section-header">
+            <div class="section-kicker">Sobre nosotros</div>
+            <h2 class="section-title">¿ Quieres saber quien forma nuestro equipo?</h2>
+            <p>
+                Kompy nace como un proyecto académico de alumnos de la Universidad de Navarra.
+                Nuestro objetivo es ayudar a las personas a hacer la compra de forma más inteligente,
+                combinando datos, rutas reales y una experiencia sencilla.
+            </p>
+        </div>
+        <div class="team-grid">
+            <div class="team-card">
+                <img src="ricardo.jpg" alt="Ricardo Garcés" class="team-photo">
+                <div class="team-name">Ricardo Garcés Hidalgo</div>
+                <div class="team-role">Co-fundador · Data & Technology</div>
+                <div class="team-email">rgarceshida@alumni.unav.es</div>
+            </div>
+            <div class="team-card">
+                <img src="paula.jpg" alt="Paula Martínez" class="team-photo">
+                <div class="team-name">Paula Martínez Varela</div>
+                <div class="team-role">Co-fundadora · Consultant & Product</div>
+                <div class="team-email">pmartinezva@alumni.unav.es</div>
+            </div>
+            <div class="team-card">
+                <img src="juan.jpg" alt="Juan Antonio García" class="team-photo">
+                <div class="team-name">Juan Antonio García Azanza</div>
+                <div class="team-role">Co-fundador · Estrategia & Business</div>
+                <div class="team-email">jgarciaazan@alumni.unav.es</div>
+            </div>
+        </div>
+    </section>
+<!-- CONTACTO + SOBRE NOSOTROS -->
+<section id="contact">
+    <div class="section-header">
+        <div class="section-kicker">Contacto</div>
+        <h2 class="section-title">¡No dudes en escribir lo que piensas!</h2>
+        <p class="section-subtitle">
+            Si quieres saber más sobre el proyecto, el modelo de datos o las posibilidades de colaboración,
+            puedes dejar un mensaje.
+        </p>
+    </div>
+
+    <div class="contact-inner">
+        <div class="contact-row">
+            <div class="contact-info">
+                <p><strong>Email demo:</strong> info@kompy.com</p>
+                <p><strong>Ubicación:</strong> Madrid · Navarra · Valencia · España</p>
+                <p><strong>Intereses:</strong> Proyectos de analítica, retail inteligente, IA aplicada.</p>
+
+                <div class="social-row">
+                    <span class="social-icon"><i class="fa-brands fa-linkedin-in"></i></span>
+                    <span class="social-icon"><i class="fa-brands fa-x-twitter"></i></span>
+                    <span class="social-icon"><i class="fa-brands fa-instagram"></i></span>
+                </div>
+            </div>
+
+            <div>
+                <form action="kompy_contacto_ok.html" method="get">
+                    <div class="form-row">
+                        <label>Nombre</label>
+                        <input type="text" name="nombre" placeholder="Tu nombre" required>
+                    </div>
+                    <div class="form-row">
+                        <label>Correo electrónico</label>
+                        <input type="text" name="correo" placeholder="tu@correo.com" required>
+                    </div>
+                    <div class="form-row">
+                        <label>Mensaje</label>
+                        <textarea name="mensaje" placeholder="Cuéntame qué te gustaría explorar con Kompy..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        Enviar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <span>© 2025 Kompy · Save more, live smarter.</span>
+    <span>Diseño demo para proyecto académico.</span>
+</footer>
+
+</body>
+</html>

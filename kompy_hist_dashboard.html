@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Kompy – Dashboard histórico</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Fuente e iconos -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+          crossorigin="anonymous" />
+
+    <!-- Chart.js para los gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --kompy-green: #4CAF50;
+            --kompy-green-dark: #2e7d32;
+            --bg-dark: #050608;
+            --text-light: #f5f5f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f4f7f5;
+            color: #222;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* NAVBAR igual que en el resto del proyecto Kompy */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            background: rgba(5, 6, 8, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .navbar-logo img {
+            height: 64px;
+            border-radius: 10px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .navbar-item {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-bottom: 3px;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .navbar-item:hover {
+            color: var(--kompy-green);
+            border-color: var(--kompy-green);
+        }
+
+        .navbar-cta {
+            background: var(--kompy-green);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .navbar-cta:hover {
+            background: var(--kompy-green-dark);
+            box-shadow: 0 8px 18px rgba(76, 175, 80, 0.35);
+            transform: translateY(-1px);
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        main {
+            padding: 140px 8vw 40px; /* margen para la navbar fija */
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+            text-align: left;
+            max-width: 1000px;
+            margin: 0 auto 24px;
+        }
+
+        .section-title {
+            font-size: 1.9rem;
+            margin-top: 6px;
+        }
+
+        .section-subtitle {
+            color: #555;
+            font-size: 0.96rem;
+        }
+
+        .dashboard-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 24px;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 24px 24px 26px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+            border: 1px solid #dceadd;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+
+        .card-header h3 {
+            font-size: 1.2rem;
+            color: var(--kompy-green-dark);
+        }
+
+        .card-header span {
+            font-size: 0.8rem;
+            color: #777;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            margin-top: 10px;
+        }
+
+        .helper-table {
+            margin-top: 12px;
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .helper-table th,
+        .helper-table td {
+            padding: 6px 8px;
+            border: 1px solid #d7e5d7;
+            text-align: center;
+        }
+
+        .helper-table thead {
+            background: #e8f5e9;
+            font-weight: 600;
+        }
+
+        @media (max-width: 720px) {
+            .navbar-menu { display: none; }
+            main { padding: 120px 5vw 40px; }
+        }
+	.results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 8px 10px;
+            border: 1px solid #d7e5d7;
+            text-align: center;
+        }
+
+        .results-table thead {
+            background: #e8f5e9;
+        }
+
+        .results-table tfoot {
+            background: #f1f8f2;
+            font-weight: 600;
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<header class="navbar">
+    <div class="navbar-logo">
+        <img src="kompy_logo_white.png" alt="Kompy">
+        <span>Kompy</span>
+    </div>
+
+    <nav class="navbar-menu">
+        <a href="KOMPY.html#planificador" class="navbar-item">
+            <i class="fa-solid fa-clipboard-list"></i> Planificador
+        </a>
+        <a href="kompy_ticket.html" class="navbar-item">
+            <i class="fa-solid fa-receipt"></i> Subir ticket
+        </a>
+        <a href="kompy_resultados_historicos.html" class="navbar-item">
+            <i class="fa-solid fa-clock-rotate-left"></i> Historial
+        </a>
+        <a href="KOMPY.html#sobre-nosotros" class="navbar-item">
+            <i class="fa-solid fa-circle-info"></i> Sobre nosotros
+        </a>
+        <a href="KOMPY.html#how" class="navbar-item">
+            <i class="fa-solid fa-route"></i> Cómo funciona
+        </a>
+        <a href="kompy_usuario.html" class="navbar-cta">
+            <i class="fa-solid fa-user"></i> Acceder
+        </a>
+    </nav>
+</header>
+
+<main>
+    <div class="section-header">
+        <h1 class="section-title">Visión histórica de tus compras.</h1>
+        <p class="section-subtitle">
+		Basado en tus últimas compras registradas por Kompy, este es el gasto acumulado en tus últimas compras y el
+                ticket medio asociado a cada perfil de ruta. Además, se puede visualizar en el gráfico los gastos de tus últimas 			compras para obtener una mejor gestión de tus compras.
+        </p>
+    </div>
+
+    <div class="dashboard-grid">
+
+        <!-- CARD 1: CONTROL DE GASTOS (Gráfico de líneas) -->
+        <section class="card">
+            <div class="card-header">
+                <h3>CONTROL DE GASTOS</h3>
+                <span>Últimas 5 compras</span>
+            </div>
+
+            <!-- Tabla “fuente” de datos (últimas 5 compras) -->
+            <!-- Ajusta estas filas para que coincidan con kompy_resultados_historicos -->
+	    <table class="results-table">
+                    <thead>
+                        <tr>
+                            <th>Perfil</th>
+                            <th>N.º de compras</th>
+                            <th>Gasto total (€)</th>
+                            <th>Gasto medio por compra (€)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ahorro</td>
+                            <td>10</td>
+                            <td>378,00</td>
+                            <td>37,80</td>
+                        </tr>
+                        <tr>
+                            <td>Rápido</td>
+                            <td>6</td>
+                            <td>265,80</td>
+                            <td>44,30</td>
+                        </tr>
+                        <tr>
+                            <td>Equilibrado</td>
+                            <td>8</td>
+                            <td>327,20</td>
+                            <td>40,90</td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Total</td>
+                            <td>24</td>
+                            <td>971,00</td>
+                            <td>40,46</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            <table class="helper-table" id="tabla-historicos">
+                <thead>
+                    <tr>
+                        <th>Fecha de la compra</th>
+                        <th>Perfil</th>
+                        <th>Precio total (€)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>2025-02-10</td><td>Ahorro</td>      <td>42.30</td></tr>
+                    <tr><td>2025-02-03</td><td>Rápido</td>      <td>38.90</td></tr>
+                    <tr><td>2025-01-27</td><td>Equilibrado</td> <td>40.10</td></tr>
+                    <tr><td>2025-01-20</td><td>Ahorro</td>      <td>36.75</td></tr>
+                    <tr><td>2025-01-13</td><td>Equilibrado</td> <td>39.40</td></tr>
+                </tbody>
+            </table>
+
+            <div class="chart-wrapper">
+                <canvas id="chartGastos"></canvas>
+            </div>
+        </section>
+
+        <!-- CARD 2: TIEMPO / DISTANCIA POR PERFIL (barras dobles) -->
+        <section class="card">
+            <div class="card-header">
+                <h3>Tiempo invertido y distancia media por perfil</h3>
+                <span>Promedios por tipo de ruta</span>
+            </div>
+
+            <!-- Tabla “fuente” de datos de perfiles -->
+            <!-- Ajusta los valores según tus minutos/distancias medios -->
+            <table class="helper-table" id="tabla-perfiles">
+                <thead>
+                    <tr>
+                        <th>Perfil de compra</th>
+                        <th>Minutos medios</th>
+                        <th>Distancia media (km)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Ahorro</td>      <td>50</td> <td>12.0</td></tr>
+                    <tr><td>Rápido</td>      <td>32</td> <td>9.0</td></tr>
+                    <tr><td>Equilibrado</td> <td>40</td> <td>10.5</td></tr>
+                </tbody>
+            </table>
+
+            <div class="chart-wrapper">
+                <canvas id="chartPerfil"></canvas>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    /* ===========================
+       1) CONTROL DE GASTOS (líneas)
+       =========================== */
+
+    const tablaHistoricos = document.getElementById("tabla-historicos").getElementsByTagName("tbody")[0];
+    const rowsHistoricos = Array.from(tablaHistoricos.querySelectorAll("tr"));
+
+    // Últimas 5 filas (ya son 5 en la tabla, pero por si la amplías)
+    const ultimasFilas = rowsHistoricos.slice(-5);
+
+    const labelsFechas = [];
+    const datosPrecios = [];
+
+    ultimasFilas.forEach(tr => {
+        const celdas = tr.querySelectorAll("td");
+        const fecha  = celdas[0].textContent.trim();
+        const precio = parseFloat(celdas[2].textContent.trim().replace(",", "."));
+        labelsFechas.push(fecha);
+        datosPrecios.push(precio);
+    });
+
+    const ctxGastos = document.getElementById("chartGastos").getContext("2d");
+
+    new Chart(ctxGastos, {
+        type: "line",
+        data: {
+            labels: labelsFechas,
+            datasets: [{
+                label: "Precio de la compra (€)",
+                data: datosPrecios,
+                borderColor: "#4CAF50",
+                backgroundColor: "rgba(76,175,80,0.15)",
+                borderWidth: 2,
+                tension: 0.3,
+                pointRadius: 4,
+                pointBackgroundColor: "#2e7d32"
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const v = context.parsed.y;
+                            return " " + v.toFixed(2) + " €";
+                        }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: "CONTROL DE GASTOS",
+                    font: { size: 14, weight: "600" }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "Fecha de la compra",
+                        font: { size: 12 }
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: "Precio de la compra (€)",
+                        font: { size: 12 }
+                    },
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+
+    /* ==========================================
+       2) TIEMPO / DISTANCIA POR PERFIL (barras)
+       ========================================== */
+
+    const tablaPerfiles = document.getElementById("tabla-perfiles").getElementsByTagName("tbody")[0];
+    const rowsPerfiles = Array.from(tablaPerfiles.querySelectorAll("tr"));
+
+    const labelsPerfiles = [];
+    const datosMinutos = [];
+    const datosDistancias = [];
+
+    rowsPerfiles.forEach(tr => {
+        const celdas = tr.querySelectorAll("td");
+        const perfil    = celdas[0].textContent.trim();
+        const minutos   = parseFloat(celdas[1].textContent.trim().replace(",", "."));
+        const distancia = parseFloat(celdas[2].textContent.trim().replace(",", "."));
+        labelsPerfiles.push(perfil);
+        datosMinutos.push(minutos);
+        datosDistancias.push(distancia);
+    });
+
+    const ctxPerfil = document.getElementById("chartPerfil").getContext("2d");
+
+    new Chart(ctxPerfil, {
+        type: "bar",
+        data: {
+            labels: labelsPerfiles,
+            datasets: [
+                {
+                    label: "Minutos medios",
+                    data: datosMinutos,
+                    backgroundColor: "rgba(76,175,80,0.7)"
+                },
+                {
+                    label: "Distancia media (km)",
+                    data: datosDistancias,
+                    backgroundColor: "rgba(46,125,50,0.7)"
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: "top"
+                },
+                title: {
+                    display: true,
+                    text: "Tiempo y distancia media por perfil",
+                    font: { size: 14, weight: "600" }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "Perfil de compra",
+                        font: { size: 12 }
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: "Minutos / Distancia media",
+                        font: { size: 12 }
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+});
+</script>
+
+</body>
+</html>
